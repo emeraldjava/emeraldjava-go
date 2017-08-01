@@ -32,7 +32,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/view/"):]
-    p, _ := loadPage(title)
+    p, err := loadPage(title)
+    if err != nil {
+        http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+        return
+    }
     t, _ := template.ParseFiles("view.html")
     t.Execute(w, p)
 }
